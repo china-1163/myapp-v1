@@ -42,11 +42,11 @@ jobs:
           cp -a overlay/ProjectUAI-zh/overrides/. upstream/
           cd upstream
           luajit test/check.lua --native
-          luajit test/run.lua --native
           luajit tools/bundle.lua --native
           luajit tools/bundle.lua --native --check
           test -s dist/uai.lua
           test -s dist/uai.manifest.json
+          luajit test/run.lua --native
           mkdir -p ../overlay/dist
           cp dist/uai.lua ../overlay/UAI_ProjectUAI_Chinese.lua
           cp dist/uai.manifest.json ../overlay/dist/UAI_ProjectUAI_Chinese.manifest.json
