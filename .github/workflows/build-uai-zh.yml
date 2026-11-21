@@ -1,0 +1,58 @@
+name: Build Project UAI Chinese client
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "ProjectUAI-zh/**"
+      - ".github/workflows/build-uai-zh.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout translation repository
+        uses: actions/checkout@v4
+        with:
+          path: overlay
+          fetch-depth: 0
+
+      - name: Checkout pinned Project UAI source
+        uses: actions/checkout@v4
+        with:
+          repository: Project-Ptolemy/ProjectUAI
+          ref: 468c5efba422d73c1533b75dd14ca30c9413152b
+          path: upstream
+
+      - name: Install LuaJIT
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y luajit
+
+      - name: Apply Chinese UI source overrides and build
+        run: |
+          cp -a overlay/ProjectUAI-zh/overrides/. upstream/
+          cd upstream
+          luajit tools/bundle.lua --native
+          test -s dist/uai.lua
+          test -s dist/uai.manifest.json
+          mkdir -p ../overlay/dist
+          cp dist/uai.lua ../overlay/UAI_ProjectUAI_Chinese.lua
+          cp dist/uai.manifest.json ../overlay/dist/UAI_ProjectUAI_Chinese.manifest.json
+
+      - name: Publish generated executor file
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+        run: |
+          cd overlay
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add UAI_ProjectUAI_Chinese.lua dist/UAI_ProjectUAI_Chinese.manifest.json
+          if ! git diff --cached --quiet; then
+            git commit -m "Build Chinese Project UAI executor client"
+            git push origin "HEAD:main"
+          fi
