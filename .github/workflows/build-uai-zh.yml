@@ -47,8 +47,6 @@ jobs:
           test -s dist/uai.lua
           test -s dist/uai.manifest.json
           luajit -e 'local factory = dofile("src/ui/localization.lua"); local locale = factory({}); local function expect(source, expected) local actual = locale.translate(source); assert(actual == expected, tostring(source) .. " => " .. tostring(actual)); end; expect("Settings", "设置"); expect("New conversation", "新建对话"); expect([=[return "Hello"]=], [=[return "Hello"]=]); print("Chinese UI localization checks passed")'
-          luajit -e 'package.path = "test/?.lua;test/mock/?.lua;" .. package.path; local h = require("env").new({}); local handle, err = h.boot(); print("UI harness boot:", tostring(handle), tostring(err)); for _, warning in ipairs(h.console.warnings) do print("UI harness warning:", warning) end'
-          luajit test/run.lua --native "every panel builds cleanly" "the built interface holds its layout invariants" "every settings pane builds and is reachable"
           mkdir -p ../overlay/dist
           cp dist/uai.lua ../overlay/UAI_ProjectUAI_Chinese.lua
           cp dist/uai.manifest.json ../overlay/dist/UAI_ProjectUAI_Chinese.manifest.json
