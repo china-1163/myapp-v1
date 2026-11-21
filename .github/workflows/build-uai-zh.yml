@@ -11,6 +11,10 @@ on:
 permissions:
   contents: write
 
+concurrency:
+  group: project-uai-chinese-${{ github.ref }}
+  cancel-in-progress: false
+
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -37,7 +41,10 @@ jobs:
         run: |
           cp -a overlay/ProjectUAI-zh/overrides/. upstream/
           cd upstream
+          luajit test/check.lua --native
+          luajit test/run.lua --native
           luajit tools/bundle.lua --native
+          luajit tools/bundle.lua --native --check
           test -s dist/uai.lua
           test -s dist/uai.manifest.json
           mkdir -p ../overlay/dist
