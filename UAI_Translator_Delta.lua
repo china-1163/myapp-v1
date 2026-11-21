@@ -113,7 +113,7 @@ local function watch(obj,root)
 end
 local function scan()
  for root in pairs(roots) do
-  safe(function() for _,obj in ipairs(root:GetDescendants()) do watch(obj,root) end end)
+  safe(function() for _,obj in ipairs(root:GetDescendants()) do watch(obj,root); apply(obj,root) end end)
  end
 end
 local function restore()
@@ -153,7 +153,7 @@ frame.BackgroundColor3=Color3.fromRGB(28,31,40); frame.BorderSizePixel=0; frame.
 Instance.new("UICorner",frame).CornerRadius=UDim.new(0,8)
 local btn=Instance.new("TextButton"); btn.Size=UDim2.new(1,-8,1,-8); btn.Position=UDim2.fromOffset(4,4)
 btn.BackgroundColor3=Color3.fromRGB(55,65,85); btn.TextColor3=Color3.new(1,1,1); btn.TextSize=14
-btn.Font=Enum.Font.GothamMedium; btn.Text="UAI 翻译："+langName[lang]; btn.Parent=frame
+btn.Font=Enum.Font.GothamMedium; btn.Text="UAI 翻译："..langName[lang]; btn.Parent=frame
 Instance.new("UICorner",btn).CornerRadius=UDim.new(0,6)
 btn.MouseButton1Click:Connect(function()
  local i=table.find(langs,lang) or 1; lang=langs[i%#langs+1]
