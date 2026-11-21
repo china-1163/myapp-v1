@@ -46,7 +46,7 @@ jobs:
           luajit tools/bundle.lua --native --check
           test -s dist/uai.lua
           test -s dist/uai.manifest.json
-          luajit -e 'local make = assert(loadfile("src/ui/localization.lua"))(); local locale = make({}); assert(locale.translate("Settings") == "设置"); assert(locale.translate("New conversation") == "新建对话"); assert(locale.translate("return \\"Hello\\"") == "return \\"Hello\\""); print("Chinese UI localization checks passed")'
+          luajit -e 'local make = assert(loadfile("src/ui/localization.lua"))(); local locale = make({}); assert(locale.translate("Settings") == "设置"); assert(locale.translate("New conversation") == "新建对话"); assert(locale.translate([[return "Hello"]]) == [[return "Hello]]); print("Chinese UI localization checks passed")'
           luajit test/run.lua --native "every panel builds cleanly" "the built interface holds its layout invariants" "every settings pane builds and is reachable"
           mkdir -p ../overlay/dist
           cp dist/uai.lua ../overlay/UAI_ProjectUAI_Chinese.lua
